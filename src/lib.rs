@@ -1,6 +1,7 @@
 //#![no_std]
 
 pub mod constants;
+mod generator;
 mod group_hash;
 mod util;
 
@@ -13,6 +14,7 @@ use algebra::{
     io::{self, Read},
     TEModelParameters,
 };
+use generator::FixedGenerators;
 use std::ops::{Add, Mul};
 use util::h_star;
 
@@ -33,7 +35,7 @@ impl<E: TEModelParameters> FromBytes for PublicKey<E> {
 
 impl<E: TEModelParameters> PublicKey<E> {
     // TODO: there are more params: data and so on...
-    pub fn verify(&self, msg: &[u8], sig: &Signature, generator: ()) -> bool {
+    pub fn verify(&self, msg: &[u8], sig: &Signature, generator: FixedGenerators) -> bool {
         // c = H*(Rbar || M)
         let c = h_star::<E>(&sig.rbar[..], msg);
 
