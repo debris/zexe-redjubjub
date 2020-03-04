@@ -1,17 +1,17 @@
 //#![no_std]
 
+pub mod constants;
+mod group_hash;
 mod util;
 
 use algebra::{
     bytes::FromBytes,
     curves::{
         edwards_bls12::EdwardsParameters,
-        models::{
-            twisted_edwards_extended::{GroupAffine, GroupProjective},
-            TEModelParameters,
-        },
+        models::twisted_edwards_extended::{GroupAffine, GroupProjective},
     },
     io::{self, Read},
+    TEModelParameters,
 };
 use std::ops::{Add, Mul};
 use util::h_star;
