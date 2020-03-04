@@ -2,20 +2,19 @@
 
 mod util;
 
-use std::ops::{Mul, Add};
 use algebra::{
     bytes::FromBytes,
-    io::{Read, self},
     curves::{
         edwards_bls12::EdwardsParameters,
         models::{
-            TEModelParameters,
             twisted_edwards_extended::{GroupAffine, GroupProjective},
+            TEModelParameters,
         },
     },
+    io::{self, Read},
 };
+use std::ops::{Add, Mul};
 use util::h_star;
-
 
 type Point<E: TEModelParameters> = GroupProjective<E>;
 
@@ -28,9 +27,7 @@ impl<E: TEModelParameters> FromBytes for PublicKey<E> {
     #[inline]
     fn read<R: Read>(mut reader: R) -> io::Result<Self> {
         let point = Point::read(&mut reader)?;
-        Ok(PublicKey { 
-            point 
-        })
+        Ok(PublicKey { point })
     }
 }
 
@@ -42,25 +39,23 @@ impl<E: TEModelParameters> PublicKey<E> {
 
         // Signature checks:
         // R != invalid
-		let r = match Point::<E>::read(&sig.rbar[..]) {
-			Ok(r) => r,
-			Err(_) => return false,
-		};
+        let r = match Point::<E>::read(&sig.rbar[..]) {
+            Ok(r) => r,
+            Err(_) => return false,
+        };
 
         // S < order(G)
         // (E::ScalarField guarantees its representation is in the field)
-		let s = match E::ScalarField::read(&sig.sbar[..]) {
+        let s = match E::ScalarField::read(&sig.sbar[..]) {
             Ok(s) => s,
             Err(_) => return false,
         };
 
         self.point.mul(&c).add(&r);
         //self.0.mul(c, params).add(&r, params).add(
-            //&params.generator(p_g).mul(s, params).negate().into(),
-            //params
+        //&params.generator(p_g).mul(s, params).negate().into(),
+        //params
         //).mul_by_cofactor(params).eq(&Point::zero())
-
-
 
         unimplemented!();
     }
@@ -79,7 +74,6 @@ impl FromBytes for Signature {
         reader.read_exact(&mut sbar)?;
         Ok(Signature { rbar, sbar })
     }
-
 }
 
 #[cfg(test)]
