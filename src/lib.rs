@@ -72,10 +72,15 @@ pub struct PublicKey<E: TEModelParameters> {
     pub point: Point<E>,
 }
 
-impl<E: TEModelParameters> FromBytes for PublicKey<E> {
+impl<E> FromBytes for PublicKey<E> 
+where
+    E: TEModelParameters,
+    E::BaseField: PrimeField + Into<BigInteger256>,
+{
     #[inline]
-    fn read<R: Read>(mut reader: R) -> io::Result<Self> {
-        let point = Point::read(&mut reader)?;
+    fn read<R: Read>(read: R) -> io::Result<Self> {
+        // TODO: handle error
+        let point = read_point::<E, R>(read).unwrap();
         Ok(PublicKey { point })
     }
 }
@@ -85,6 +90,12 @@ where
     E: TEModelParameters,
     E::BaseField: PrimeField + Into<BigInteger256>,
 {
+    pub fn new(point: Point<E>) -> Self {
+        PublicKey {
+            point
+        }
+    }
+
     pub fn from_private(privkey: &PrivateKey<E>, generator: FixedGenerators) -> Self {
         PublicKey {
             point: generator.point().mul(&privkey.field),
