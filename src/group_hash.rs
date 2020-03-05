@@ -1,5 +1,9 @@
-use crate::{constants, point::read_point, Point};
-use algebra::{biginteger::BigInteger256, PrimeField, TEModelParameters};
+use crate::{
+    constants,
+    point::{mul_by_cofactor, read_point},
+    Point,
+};
+use algebra::{biginteger::BigInteger256, prelude::Zero, PrimeField, TEModelParameters};
 use blake2_rfc::blake2s::Blake2s;
 
 /// Produces a random point in the Jubjub curve.
@@ -17,7 +21,16 @@ where
     h.update(tag);
     let h = h.finalize().as_ref().to_vec();
     assert!(h.len() == 32);
-    read_point(&h[..])
+
+    let mut p = read_point(&h[..])?;
+
+    p = mul_by_cofactor(&p);
+
+    if !p.is_zero() {
+        Some(p)
+    } else {
+        None
+    }
 }
 
 pub fn find_group_hash<E>(m: &[u8], personalization: &[u8; 8]) -> Point<E>

@@ -6,7 +6,7 @@ use algebra::{
     curves::{twisted_edwards_extended::GroupProjective, ProjectiveCurve},
     fields::{Field, SquareRootField},
     io::{self, Read, Write},
-    prelude::{One, Zero},
+    prelude::One,
     PrimeField, TEModelParameters,
 };
 use core::ops::{AddAssign, MulAssign, Neg, SubAssign};
@@ -26,15 +26,7 @@ where
     y_repr.as_mut()[3] &= 0x7fffffffffffffff;
 
     let y = E::BaseField::from_repr(y_repr);
-    let mut p = get_for_y(y, x_sign)?;
-
-    p = mul_by_cofactor(&p);
-
-    if !p.is_zero() {
-        Some(p)
-    } else {
-        None
-    }
+    get_for_y(y, x_sign)
 }
 
 pub fn write_point<E, W>(point: &Point<E>, writer: W) -> io::Result<()>
@@ -164,4 +156,21 @@ fn double<E: TEModelParameters>(point: &Point<E>) -> Point<E> {
     z3.mul_assign(&g);
 
     Point::new(x3, y3, t3, z3)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{read_point, write_point, Point};
+    use algebra::{curves::jubjub::JubJubParameters, test_rng};
+    use rand::Rng;
+
+    #[test]
+    fn test_write_read() {
+        let mut rng = test_rng();
+        let point: Point<JubJubParameters> = rng.gen();
+        let mut buffer = [0u8; 32];
+        write_point(&point, &mut buffer[..]).unwrap();
+        let read = read_point::<JubJubParameters, _>(&buffer[..]).unwrap();
+        assert_eq!(point, read);
+    }
 }

@@ -1,3 +1,6 @@
+#![allow(dead_code)]
+//! TODO: cleanup unused constants
+
 /// First 64 bytes of the BLAKE2s input during group hash.
 /// This is chosen to be some random string that we couldn't have anticipated when we designed
 /// the algorithm, for rigidity purposes.
