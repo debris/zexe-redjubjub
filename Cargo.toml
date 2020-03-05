@@ -7,8 +7,9 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-algebra = { path = "../zexe/algebra" } #, default-features = false }
-groth16 = { path = "../zexe/groth16" } #, default-features = false }
+algebra = { path = "../zexe/algebra", default-features = false }
+groth16 = { path = "../zexe/groth16", default-features = false }
+rand = { version = "0.7", default-features = false }
 
 [dependencies.blake2-rfc]
 git = "https://github.com/debris/blake2-rfc"
