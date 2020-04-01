@@ -11,8 +11,7 @@ use algebra::{
     bytes::{FromBytes, ToBytes},
     io::{self, Read},
     prelude::Zero,
-    PrimeField, TEModelParameters,
-    ProjectiveCurve,
+    PrimeField, ProjectiveCurve, TEModelParameters,
 };
 use core::{
     fmt,
@@ -73,7 +72,7 @@ pub struct PublicKey<E: TEModelParameters> {
     pub point: Point<E>,
 }
 
-impl<E> FromBytes for PublicKey<E> 
+impl<E> FromBytes for PublicKey<E>
 where
     E: TEModelParameters,
     E::BaseField: PrimeField + Into<BigInteger256>,
@@ -92,9 +91,7 @@ where
     E::BaseField: PrimeField + Into<BigInteger256>,
 {
     pub fn new(point: Point<E>) -> Self {
-        PublicKey {
-            point
-        }
+        PublicKey { point }
     }
 
     pub fn from_private(privkey: &PrivateKey<E>, generator: FixedGenerators) -> Self {

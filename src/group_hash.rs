@@ -60,7 +60,7 @@ mod tests {
     use super::group_hash;
     use crate::Point;
     use algebra::{
-        biginteger::BigInteger256 as BigInteger, jubjub::JubJubParameters, fields::Fp256,
+        biginteger::BigInteger256 as BigInteger, fields::Fp256, jubjub::JubJubParameters,
     };
 
     #[test]
