@@ -12,10 +12,11 @@ use algebra::{
     io::{self, Read},
     prelude::Zero,
     PrimeField, TEModelParameters,
+    ProjectiveCurve,
 };
 use core::{
     fmt,
-    ops::{Add, AddAssign, Mul, MulAssign, Neg},
+    ops::{Add, AddAssign, MulAssign, Neg},
 };
 use point::mul_by_cofactor;
 use rand::Rng;
@@ -52,7 +53,7 @@ where
 
         // R = r . P_G
         //let r_g = params.generator(p_g).mul(r, params);
-        let r_g = generator.point::<E>().mul(&r);
+        let r_g = generator.point::<E>().mul(r);
         let mut rbar = [0u8; 32];
         write_point(&r_g, &mut rbar[..]).expect("Jubjub points should serialize to 32 bytes");
 
@@ -98,7 +99,7 @@ where
 
     pub fn from_private(privkey: &PrivateKey<E>, generator: FixedGenerators) -> Self {
         PublicKey {
-            point: generator.point().mul(&privkey.field),
+            point: generator.point().mul(privkey.field),
         }
     }
 
@@ -123,9 +124,9 @@ where
         // 0 = h_G(-S . P_G + R + c . vk)
         let p = self
             .point
-            .mul(&c)
+            .mul(c)
             .add(&r)
-            .add(&generator.point().mul(&s).neg());
+            .add(&generator.point().mul(s).neg());
 
         mul_by_cofactor(&p).is_zero()
     }
@@ -150,7 +151,7 @@ impl FromBytes for Signature {
 #[cfg(test)]
 mod tests {
     use super::{FixedGenerators, PrivateKey, PublicKey, Signature};
-    use algebra::curves::jubjub::JubJubParameters;
+    use algebra::jubjub::JubJubParameters;
     use rand::{rngs::mock::StepRng, Rng};
 
     #[test]

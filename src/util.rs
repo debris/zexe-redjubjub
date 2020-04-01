@@ -54,7 +54,7 @@ where
 mod tests {
     use super::h_star;
     use algebra::{
-        biginteger::BigInteger256 as BigInteger, curves::jubjub::JubJubParameters, fields::Fp256,
+        biginteger::BigInteger256 as BigInteger, jubjub::JubJubParameters, fields::Fp256,
     };
 
     #[test]

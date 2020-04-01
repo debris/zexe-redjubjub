@@ -161,7 +161,7 @@ fn double<E: TEModelParameters>(point: &Point<E>) -> Point<E> {
 #[cfg(test)]
 mod tests {
     use super::{read_point, write_point, Point};
-    use algebra::{curves::jubjub::JubJubParameters, test_rng};
+    use algebra::{jubjub::JubJubParameters, test_rng};
     use rand::Rng;
 
     #[test]
